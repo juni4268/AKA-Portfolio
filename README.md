@@ -1,71 +1,63 @@
-# AKA — 보스 러시 액션 게임
+# AKA
 
-![AKA cover](Docs/images/cover.png)
+![AKA 보스전 화면](Docs/images/cover.png)
 
-> Unreal Engine 5.6 · C++ · Behavior Tree AI · 1인 플레이 보스 러시
+Unreal Engine 5.6으로 만든 탑뷰 보스 러시 액션 게임 **AKA**의 게임 코드입니다.
 
-보스를 쓰러뜨릴 때마다 보스가 강해져 다시 등장하고, 클리어 타임(랩타임)을 기록하는 보스 러시 액션 게임입니다.
+쓰러뜨릴 때마다 더 강해져 돌아오는 보스와 싸우며 클리어 시간을 기록합니다.
 
-<!-- TODO: 플레이 영상 링크로 바꿔 주세요 -->
-**▶ 플레이 영상:** [YouTube](https://youtube.com/)
-**⬇ 플레이 빌드 (Windows):** [Releases](../../releases)
+- 영상과 구현 설명: https://juni4268.github.io/aka/
+- 이 저장소는 포트폴리오용으로 **코드와 설정만** 공개합니다. 캐릭터, 맵, 사운드, 이펙트는 마켓플레이스(Fab) 에셋이라 포함하지 않았고, 이 저장소만으로는 에디터에서 프로젝트를 열 수 없습니다.
 
----
+## 개요
 
-## 주요 구현 내용
-
-### 1. Behavior Tree 기반 보스 AI
-- `ABossAIController` + Behavior Tree/Blackboard로 보스 행동을 구성했습니다.
-- **커스텀 Service:** [`BTService_UpdateBossState`](Source/AKA/BTService_UpdateBossState.cpp)
-  - 0.1초 간격으로 거리, 페이즈, 스턴 여부, 패턴별 쿨타임을 Blackboard에 갱신합니다.
-  - 공격 플래그가 몽타주 없이 남아 있으면 강제로 초기화하는 **워치독 로직**으로 AI가 멈추는 버그를 막았습니다.
-- **커스텀 Task:** 근접 공격, 돌진, 점프 공격, 원거리 공격과 각 2페이즈 변형을 노드 단위로 분리했습니다.
-  - [`BTTaskNode_Attack`](Source/AKA/BTTaskNode_Attack.cpp) / [`_Attack_P2`](Source/AKA/BTTaskNode_Attack_P2.cpp)
-  - [`BTTaskNode_DashAttack`](Source/AKA/BTTaskNode_DashAttack.cpp)
-  - [`BTTaskNode_JumpAttack`](Source/AKA/BTTaskNode_JumpAttack.cpp) / [`_JumpAttack_P2`](Source/AKA/BTTaskNode_JumpAttack_P2.cpp)
-  - [`BTTaskNode_RangeAttack`](Source/AKA/BTTaskNode_RangeAttack.cpp)
-- **커스텀 Decorator:** [`BTDecorator_CheckLineOfSight`](Source/AKA/BTDecorator_CheckLineOfSight.cpp)로 시야 확보 여부를 판정해 패턴 선택 조건으로 사용합니다.
-
-### 2. 보스 패턴과 페이즈 시스템 — [`BossMonster.cpp`](Source/AKA/BossMonster.cpp)
-| 패턴 | 내용 |
+| | |
 |---|---|
-| 근접 공격 | 양손 본에 붙인 `BoxComponent`로 피격을 판정합니다 |
-| 돌진 | `EDashState`(준비 → 돌진) 상태 머신으로 처리하고, AnimNotify로 준비가 끝나는 시점을 맞춥니다 |
-| 점프 공격 | 장판(Indicator)이 일정 시간 플레이어를 추적하다가 멈추면 보스가 그 위치에 착지합니다 |
-| 원거리 공격 | 번개 투사체를 부채꼴로 발사하며, 페이즈가 오를수록 강해집니다 |
+| 엔진 | Unreal Engine 5.6 · C++ |
+| 시점 | 탑뷰 |
+| 기간 | 2025년 8월~11월 (4개월) |
+| 인원 | 1인 제작 |
+| 담당 | 기획, 프로그래밍, UI 제작 |
 
-- **3페이즈:** HP가 2/3, 1/3 아래로 떨어질 때 페이즈가 전환되고, 오버레이 머티리얼로 시각적인 변화를 줍니다.
-- **보스 레벨업:** 처치할 때마다 HP, 데미지, 투사체 속도가 레벨에 비례해 늘어납니다(`LevelUpBoss`).
+## 주요 구현 코드
 
-### 3. 기믹: 스턴 기둥 — [`StunnablePillar`](Source/AKA/StunnablePillar.cpp)
-- 플레이어가 돌진하는 보스를 기둥에 부딪히게 하면 보스가 **스턴** 상태가 되어 딜 타이밍이 생깁니다.
-- 기둥은 일정 횟수를 맞으면 물리 충격을 받아 쓰러집니다.
+소개 페이지에서 설명하는 부분입니다.
 
-### 4. 플레이어 — [`AkaPlayer.cpp`](Source/AKA/AkaPlayer.cpp)
-- Enhanced Input 기반으로 이동, 공격(번개 발사), 일시정지, 랩타임 보드를 조작합니다.
-- 피격 시 보스 위치를 기준으로 넉백 방향을 계산합니다.
+| 내용 | 코드 |
+|---|---|
+| 보스 AI: 거리·페이즈·기절·대기 시간을 0.1초마다 갱신하는 서비스 노드 | [`BTService_UpdateBossState.cpp`](Source/AKA/BTService_UpdateBossState.cpp) |
+| 보스 패턴과 페이즈: 페이즈 전환, 점프 공격의 순서 | [`BossMonster.cpp`](Source/AKA/BossMonster.cpp) |
+| 돌진과 기둥: 돌진 중 충돌과 기절 | [`BossMonster.cpp`](Source/AKA/BossMonster.cpp) |
+| 돌진과 기둥: 부딪힌 횟수에 따라 쓰러지는 기둥 | [`StunnablePillar.cpp`](Source/AKA/StunnablePillar.cpp) |
+| 강해지는 보스: 레벨에 따른 수치 | [`BossMonster.cpp`](Source/AKA/BossMonster.cpp) |
+| 랩타임 기록 | [`AKAGameInstance.cpp`](Source/AKA/AKAGameInstance.cpp) |
 
-### 5. 게임 흐름 / UI
-- [`AKATrigger`](Source/AKA/AKATrigger.cpp)는 구역 진입 시 카메라 전환, HUD 표시, 랩타임 보드 표시를 처리합니다.
-- [`AKAGameInstance`](Source/AKA/AKAGameInstance.cpp)는 레벨 간 데이터 유지와 랩타임 기록 및 정렬을 담당합니다.
-- [`PlayerWidget`](Source/AKA/PlayerWidget.cpp)과 [`TitleWidget`](Source/AKA/TitleWidget.cpp)은 HP, 보스 게이지, 타이틀 UI를 담당합니다.
+## 보스 공격 노드
 
----
+비헤이비어 트리에서 공격 하나가 노드 하나입니다.
 
-## 프로젝트 구조
-```
-Source/AKA/
-├─ BossMonster.*          보스 본체 (패턴, 페이즈, 스턴, 레벨업)
-├─ BossAIController.*     AI 컨트롤러
-├─ BTService_* / BTTask* / BTDecorator_*   Behavior Tree 노드
-├─ AkaPlayer.*            플레이어
-├─ LightningBolt.* / BossLightningBolt.*   투사체
-├─ JumpAttackIndicator.*  점프 공격 장판
-├─ StunnablePillar.*      스턴 기둥 기믹
-├─ AKATrigger.*           구역 트리거
-└─ AKAGameInstance.* / *Widget.*   게임 흐름, UI
-```
+| 공격 | 코드 |
+|---|---|
+| 근접 공격 | [`BTTaskNode_Attack`](Source/AKA/BTTaskNode_Attack.cpp), [`BTTaskNode_Attack_P2`](Source/AKA/BTTaskNode_Attack_P2.cpp) |
+| 돌진 | [`BTTaskNode_DashAttack`](Source/AKA/BTTaskNode_DashAttack.cpp) |
+| 점프 공격 | [`BTTaskNode_JumpAttack`](Source/AKA/BTTaskNode_JumpAttack.cpp), [`BTTaskNode_JumpAttack_P2`](Source/AKA/BTTaskNode_JumpAttack_P2.cpp) |
+| 원거리 공격 | [`BTTaskNode_RangeAttack`](Source/AKA/BTTaskNode_RangeAttack.cpp) |
 
-## 참고
-- 이 저장소에는 **코드와 설정만** 포함되어 있습니다. 아트, 사운드, 이펙트 등은 마켓플레이스(Fab) 에셋을 사용해서 라이선스상 포함하지 않았습니다. 그래서 이 저장소만으로는 에디터에서 프로젝트를 열 수 없으며, 플레이는 Releases의 빌드로 해 주세요.
-- 엔진: Unreal Engine 5.6 / 플러그인: PaperZD
+## 그 외 코드
+
+| 내용 | 위치 |
+|---|---|
+| AI 컨트롤러 | [`BossAIController.cpp`](Source/AKA/BossAIController.cpp) |
+| 시야 확인 조건 노드 | [`BTDecorator_CheckLineOfSight.cpp`](Source/AKA/BTDecorator_CheckLineOfSight.cpp) |
+| 점프 공격의 바닥 표시 | [`JumpAttackIndicator.cpp`](Source/AKA/JumpAttackIndicator.cpp) |
+| 번개 투사체(플레이어, 보스) | [`LightningBolt.cpp`](Source/AKA/LightningBolt.cpp), [`BossLightningBolt.cpp`](Source/AKA/BossLightningBolt.cpp) |
+| 플레이어 | [`AkaPlayer.cpp`](Source/AKA/AkaPlayer.cpp) |
+| 부서지는 엄폐물 | [`CoverActor.cpp`](Source/AKA/CoverActor.cpp) |
+| 구역 전환(카메라, HUD, 랩타임 보드) | [`AKATrigger.cpp`](Source/AKA/AKATrigger.cpp) |
+| UI | [`PlayerWidget.cpp`](Source/AKA/PlayerWidget.cpp), [`TitleWidget.cpp`](Source/AKA/TitleWidget.cpp) |
+
+## 폴더
+
+- `Source/AKA` — 게임 코드
+- `Config` — 프로젝트 설정
+- `AKA.uproject` — 엔진 버전과 플러그인(PaperZD)
