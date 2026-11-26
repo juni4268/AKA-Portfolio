@@ -7,6 +7,7 @@ Unreal Engine 5.6으로 만든 탑뷰 보스 러시 액션 게임 **AKA**의 게
 쓰러뜨릴 때마다 더 강해져 돌아오는 보스와 싸우며 클리어 시간을 기록합니다.
 
 - 영상과 구현 설명: https://juni4268.github.io/aka/
+- 플레이 빌드 (Windows): [Releases](https://github.com/juni4268/AKA-Portfolio/releases/latest)
 - 이 저장소는 포트폴리오용으로 **코드와 설정만** 공개합니다. 캐릭터, 맵, 사운드, 이펙트는 마켓플레이스(Fab) 에셋이라 포함하지 않았고, 이 저장소만으로는 에디터에서 프로젝트를 열 수 없습니다.
 
 ## 개요
