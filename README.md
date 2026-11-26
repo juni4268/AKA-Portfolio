@@ -21,21 +21,29 @@
 
 소개 페이지에서 영상과 함께 설명하는 부분입니다.
 
-**비헤이비어 트리로 만든 보스 AI**
+### 비헤이비어 트리로 만든 보스 AI
+
 근접 공격, 돌진, 점프 공격, 원거리 공격을 각각 하나의 노드로 나누고, 트리가 상황에 맞는 공격을 고릅니다. 판단에 필요한 값(플레이어와의 거리, 페이즈, 기절 여부, 대기 시간)은 서비스 노드가 0.1초마다 갱신합니다.
-→ [`BTService_UpdateBossState.cpp`](Source/AKA/BTService_UpdateBossState.cpp)
 
-**보스 패턴과 세 페이즈**
+코드: [`BTService_UpdateBossState.cpp`](Source/AKA/BTService_UpdateBossState.cpp)
+
+### 보스 패턴과 세 페이즈
+
 체력이 3분의 2, 3분의 1 아래로 내려갈 때마다 페이즈가 바뀌어 세 단계로 진행됩니다.
-→ [`BossMonster.cpp`](Source/AKA/BossMonster.cpp)
 
-**돌진과 기둥**
+코드: [`BossMonster.cpp`](Source/AKA/BossMonster.cpp)
+
+### 돌진과 기둥
+
 돌진하는 보스를 기둥으로 유도해 부딪히게 하면 보스가 기절합니다. 기둥은 정해진 횟수만큼 부딪히면 쓰러지고, 쓰러진 기둥은 더 이상 보스를 기절시키지 않습니다.
-→ [`BossMonster.cpp`](Source/AKA/BossMonster.cpp), [`StunnablePillar.cpp`](Source/AKA/StunnablePillar.cpp)
 
-**강해지는 보스와 랩타임**
+코드: [`BossMonster.cpp`](Source/AKA/BossMonster.cpp), [`StunnablePillar.cpp`](Source/AKA/StunnablePillar.cpp)
+
+### 강해지는 보스와 랩타임
+
 보스를 쓰러뜨리면 레벨이 올라 다시 등장하고, 체력, 공격별 피해량, 번개의 속도가 함께 올라갑니다. 보스 하나를 쓰러뜨리는 데 걸린 시간을 랩타임으로 기록합니다.
-→ [`BossMonster.cpp`](Source/AKA/BossMonster.cpp), [`AKAGameInstance.cpp`](Source/AKA/AKAGameInstance.cpp)
+
+코드: [`BossMonster.cpp`](Source/AKA/BossMonster.cpp), [`AKAGameInstance.cpp`](Source/AKA/AKAGameInstance.cpp)
 
 ## 조작
 
@@ -60,7 +68,7 @@
 </details>
 
 <details>
-<summary>플레이어, 맵, UI</summary>
+<summary>AI, 플레이어, 맵, UI</summary>
 
 | 내용 | 위치 |
 |---|---|
